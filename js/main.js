@@ -3,33 +3,32 @@ $(function() {
         var margin = {top: 20, right: 20, bottom: 30, left: 40};
         var width = 960 - margin.left - margin.right, 
             height = 500 - margin.top - margin.bottom;
-
+        
+        
+        
         function myChart(selection) {
-            selection.each(function(data, i) {
-                var color = d3.scale.linear()
-                    .domain([0, 20])
-                    .range(['white', 'steelblue'])
-                    .interpolate(d3.interpolateLab);
-
-                var hexbin = d3.hexbin()
-                    .size([width, height])
-                    .radius(20);
-
-                var x = d3.scale.identity()
-                    .domain([0, width]);
-
-                var y = d3.scale.linear()
-                    .domain([0, height]);
-
+            selection.each(function(points) {
+                var x = d3.scale.identity().domain([0, width]);
+                var y = d3.scale.linear().domain([0, height]);
                 var xAxis = d3.svg.axis()
                     .scale(x)
                     .orient('bottom')
                     .tickSize(6, -height);
-
                 var yAxis = d3.svg.axis()
                     .scale(y)
                     .orient('left')
                     .tickSize(6, -width);
+                
+                console.log(points);
+                
+                var hexbin = d3.hexbin()
+                    .size([hexChart.width(), hexChart.height()])
+                    .radius(20);
+
+                var color = d3.scale.linear()
+                    .domain([0, 20])
+                    .range(['white', 'steelblue'])
+                    .interpolate(d3.interpolateLab);
 
                 var svg = d3.select(this).append('svg')
                     .attr('width', width + margin.left + margin.right)
@@ -47,18 +46,12 @@ $(function() {
                 svg.append('g')
                     .attr('clip-path', 'url(#clip)')
                     .selectAll('.hexagon')
-                    .data([hexbin(data)])
+                    .data(hexbin(points))
                     .enter().append('path')
                     .attr('class', 'hexagon')
                     .attr('d', hexbin.hexagon())
-                    .attr('trasnform', function(d) { 
-                        return 'translate(' + d.x + ',' + d.y + ')'; 
-                    })
-                    .style('fill', function(d) { return color(d.length); });
-                
-                svg.append('g')
-                    .attr('class', 'y axis')
-                    .call(yAxis);
+                    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+                    .style("fill", function(d) { return color(d.length); });
 
                 svg.append('g')
                     .attr('class', 'x axis')
@@ -95,11 +88,8 @@ $(function() {
         randomY = d3.random.normal(hexChart.height() / 2, 80),
         points = d3.range(2000).map(function() { return [randomX(), randomY()]; });
     
-    // console.log('points: ' + points);
-    
-    
     var chartWrapper = d3.select('#my-div')
-        .datum([points])
+        .datum(points)
         .call(hexChart);
     
 });
