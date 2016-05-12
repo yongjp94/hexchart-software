@@ -19,23 +19,24 @@ $(function() {
                     .orient('left')
                     .tickSize(6, -width);
                 
-                console.log(points);
-                
                 var hexbin = d3.hexbin()
                     .size([hexChart.width(), hexChart.height()])
                     .radius(20);
-
+                
+                // updates color
                 var color = d3.scale.linear()
                     .domain([0, 20])
                     .range(['white', 'steelblue'])
                     .interpolate(d3.interpolateLab);
-
+                
+                // updates inner and outer dimensions of svg
                 var svg = d3.select(this).append('svg')
                     .attr('width', width + margin.left + margin.right)
                     .attr('height', height + margin.top + margin.bottom)
                     .append('g')
                     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
+                
+                // updates inner canvas area
                 svg.append('clipPath')
                     .attr('id', 'clip')
                     .append('rect')
@@ -43,6 +44,7 @@ $(function() {
                     .attr('width', width)
                     .attr('height', height);
                 
+                // updates hexagons
                 svg.append('g')
                     .attr('clip-path', 'url(#clip)')
                     .selectAll('.hexagon')
@@ -52,7 +54,8 @@ $(function() {
                     .attr('d', hexbin.hexagon())
                     .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
                     .style("fill", function(d) { return color(d.length); });
-
+                
+                // updates x axis
                 svg.append('g')
                     .attr('class', 'x axis')
                     .attr('transform', 'translate(0,' + height + ')')
@@ -81,9 +84,10 @@ $(function() {
     
     
     
-    
+    // Call your chart
     var hexChart = hexChart();
     
+    // Create random data points
     var randomX = d3.random.normal(hexChart.width() / 2, 80),
         randomY = d3.random.normal(hexChart.height() / 2, 80),
         points = d3.range(2000).map(function() { return [randomX(), randomY()]; });
