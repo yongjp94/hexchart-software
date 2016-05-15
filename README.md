@@ -52,14 +52,14 @@ Your finished product should look something like this!
 You also have an option to change the width and height of the canvas
 ```javascript
 // returns current height
-chart.height()
+chart.height();
 
 // changes height to val and returns chart function
-chart.height(val)
+chart.height(val);
 
 // returns current width
-chart.width()
+chart.width();
 
 // changes width to val and returns chart function
-chart.width()
+chart.width(val);
 ```
